@@ -48,6 +48,26 @@ import {
   createTaskStoryTool
 } from './tools/story-tools.js';
 import {
+  getProjectTemplateTool,
+  getProjectTemplatesTool,
+  instantiateProjectTemplateTool
+} from './tools/project-template-tools.js';
+import {
+  getPortfolioTool,
+  listPortfoliosTool,
+  getPortfolioItemsTool,
+  addPortfolioItemTool,
+  removePortfolioItemTool,
+  addPortfolioMembersTool,
+  removePortfolioMembersTool,
+  getPortfolioCustomFieldsTool,
+  addPortfolioCustomFieldSettingTool,
+  removePortfolioCustomFieldSettingTool,
+  createPortfolioTool,
+  updatePortfolioTool,
+  deletePortfolioTool
+} from './tools/portfolio-tools.js';
+import {
   getTeamsForUserTool,
   getTeamsForWorkspaceTool,
   getUsersForWorkspaceTool
@@ -99,7 +119,23 @@ export const tools: Tool[] = [
   getUsersForWorkspaceTool,
   getAttachmentsForObjectTool,
   uploadAttachmentForObjectTool,
-  downloadAttachmentTool
+  downloadAttachmentTool,
+  getProjectTemplateTool,
+  getProjectTemplatesTool,
+  instantiateProjectTemplateTool,
+  getPortfolioTool,
+  listPortfoliosTool,
+  getPortfolioItemsTool,
+  addPortfolioItemTool,
+  removePortfolioItemTool,
+  addPortfolioMembersTool,
+  removePortfolioMembersTool,
+  getPortfolioCustomFieldsTool,
+  addPortfolioCustomFieldSettingTool,
+  removePortfolioCustomFieldSettingTool,
+  createPortfolioTool,
+  updatePortfolioTool,
+  deletePortfolioTool
 ];
 
 // Exportăm și ca list_of_tools pentru compatibilitate cu index.ts
@@ -542,6 +578,134 @@ export function tool_handler(asanaClient: AsanaClientWrapper): (request: CallToo
           case "asana_download_attachment": {
             const { attachment_gid, output_dir } = args;
             const response = await asanaClient.downloadAttachment(attachment_gid, output_dir);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_get_project_template": {
+            const { project_template_gid, ...opts } = args;
+            const response = await asanaClient.getProjectTemplate(project_template_gid, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_get_project_templates": {
+            const { workspace, team, ...opts } = args;
+            const response = await asanaClient.getProjectTemplates(workspace, team, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_instantiate_project_template": {
+            const { project_template_gid, name, team, ...opts } = args;
+            const response = await asanaClient.instantiateProjectTemplate(project_template_gid, name, team, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_get_portfolio": {
+            const { portfolio_gid, ...opts } = args;
+            const response = await asanaClient.getPortfolio(portfolio_gid, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_list_portfolios": {
+            const { workspace, owner, ...opts } = args;
+            const response = await asanaClient.getPortfolios(workspace, owner, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_get_portfolio_items": {
+            const { portfolio_gid, ...opts } = args;
+            const response = await asanaClient.getPortfolioItems(portfolio_gid, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_add_portfolio_item": {
+            const { portfolio_gid, item, ...opts } = args;
+            const response = await asanaClient.addPortfolioItem(portfolio_gid, item, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_remove_portfolio_item": {
+            const { portfolio_gid, item, ...opts } = args;
+            const response = await asanaClient.removePortfolioItem(portfolio_gid, item, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_add_portfolio_members": {
+            const { portfolio_gid, members, ...opts } = args;
+            const response = await asanaClient.addPortfolioMembers(portfolio_gid, members, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_remove_portfolio_members": {
+            const { portfolio_gid, members, ...opts } = args;
+            const response = await asanaClient.removePortfolioMembers(portfolio_gid, members, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_get_portfolio_custom_fields": {
+            const { portfolio_gid, ...opts } = args;
+            const response = await asanaClient.getPortfolioCustomFieldSettings(portfolio_gid, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_add_portfolio_custom_field_setting": {
+            const { portfolio_gid, custom_field, ...opts } = args;
+            const response = await asanaClient.addPortfolioCustomFieldSetting(portfolio_gid, custom_field, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_remove_portfolio_custom_field_setting": {
+            const { portfolio_gid, custom_field, ...opts } = args;
+            const response = await asanaClient.removePortfolioCustomFieldSetting(portfolio_gid, custom_field, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_create_portfolio": {
+            const { workspace, name, ...opts } = args;
+            const response = await asanaClient.createPortfolio(workspace, name, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_update_portfolio": {
+            const { portfolio_gid, ...opts } = args;
+            const response = await asanaClient.updatePortfolio(portfolio_gid, opts);
+            return {
+              content: [{ type: "text", text: JSON.stringify(response) }],
+            };
+          }
+
+          case "asana_delete_portfolio": {
+            const { portfolio_gid, ...opts } = args;
+            const response = await asanaClient.deletePortfolio(portfolio_gid, opts);
             return {
               content: [{ type: "text", text: JSON.stringify(response) }],
             };

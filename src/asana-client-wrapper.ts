@@ -13,6 +13,8 @@ export class AsanaClientWrapper {
   private sections: any;
   private users: any;
   private teams: any;
+  private projectTemplates: any;
+  private portfolios: any;
   private defaultWorkspaceId?: string;
 
   constructor(token: string, defaultWorkspaceId?: string) {
@@ -30,6 +32,8 @@ export class AsanaClientWrapper {
     this.sections = new Asana.SectionsApi();
     this.users = new Asana.UsersApi();
     this.teams = new Asana.TeamsApi();
+    this.projectTemplates = new Asana.ProjectTemplatesApi();
+    this.portfolios = new Asana.PortfoliosApi();
     this.defaultWorkspaceId = defaultWorkspaceId;
   }
 
@@ -1574,5 +1578,143 @@ export class AsanaClientWrapper {
     await pipeline(res.body, fileStream);
 
     return { attachment_id: attachmentId, file_path: filePath, mime_type: contentType };
+  }
+
+  // Project Template methods
+  async getProjectTemplate(projectTemplateGid: string, options: any = {}) {
+    const response = await this.projectTemplates.getProjectTemplate(projectTemplateGid, options);
+    return response.data;
+  }
+
+  async getProjectTemplates(workspace?: string, team?: string, options: any = {}) {
+    const params = { ...options };
+    if (workspace) params.workspace = workspace;
+    if (team) params.team = team;
+    
+    const response = await this.projectTemplates.getProjectTemplates(params);
+    return response.data;
+  }
+
+  async instantiateProjectTemplate(projectTemplateGid: string, name: string, team: string, options: any = {}) {
+    const data = {
+      name,
+      team,
+      ...options
+    };
+    
+    const response = await this.projectTemplates.instantiateProjectTemplate(projectTemplateGid, { data });
+    return response.data;
+  }
+
+  // Portfolio methods
+  async getPortfolio(portfolioGid: string, options: any = {}) {
+    const response = await this.portfolios.getPortfolio(portfolioGid, options);
+    return response.data;
+  }
+
+  async getPortfolios(workspace?: string, owner?: string, options: any = {}) {
+    const params = { ...options };
+    if (workspace || this.defaultWorkspaceId) {
+      params.workspace = workspace || this.defaultWorkspaceId;
+    }
+    if (owner) params.owner = owner;
+    
+    const response = await this.portfolios.getPortfolios(params);
+    return response.data;
+  }
+
+  async getPortfolioItems(portfolioGid: string, options: any = {}) {
+    const response = await this.portfolios.getItemsForPortfolio(portfolioGid, options);
+    return response.data;
+  }
+
+  async addPortfolioItem(portfolioGid: string, item: string, options: any = {}) {
+    try {
+      const body = { data: { item } };
+      const response = await this.portfolios.addItemForPortfolio(body, portfolioGid);
+      
+      // Check if response exists
+      if (!response) {
+        throw new Error('No response received from Asana API');
+      }
+      
+      return response;
+    } catch (error: any) {
+      console.error(`Error adding item to portfolio: ${error.message}`);
+      if (error.response && error.response.body) {
+        console.error(`Response error details: ${JSON.stringify(error.response.body, null, 2)}`);
+      }
+      throw error;
+    }
+  }
+
+  async removePortfolioItem(portfolioGid: string, item: string, options: any = {}) {
+    try {
+      const body = { data: { item } };
+      const response = await this.portfolios.removeItemForPortfolio(body, portfolioGid);
+      
+      // Check if response exists
+      if (!response) {
+        throw new Error('No response received from Asana API');
+      }
+      
+      return response;
+    } catch (error: any) {
+      console.error(`Error removing item from portfolio: ${error.message}`);
+      if (error.response && error.response.body) {
+        console.error(`Response error details: ${JSON.stringify(error.response.body, null, 2)}`);
+      }
+      throw error;
+    }
+  }
+
+  async addPortfolioMembers(portfolioGid: string, members: string[], options: any = {}) {
+    const body = { data: { members: this.ensureArray(members) } };
+    const response = await this.portfolios.addMembersForPortfolio(body, portfolioGid, options);
+    return response;
+  }
+
+  async removePortfolioMembers(portfolioGid: string, members: string[], options: any = {}) {
+    const body = { data: { members: this.ensureArray(members) } };
+    const response = await this.portfolios.removeMembersForPortfolio(body, portfolioGid, options);
+    return response;
+  }
+
+  async getPortfolioCustomFieldSettings(portfolioGid: string, options: any = {}) {
+    const response = await this.portfolios.getCustomFieldSettingsForPortfolio(portfolioGid, options);
+    return response.data;
+  }
+
+  async addPortfolioCustomFieldSetting(portfolioGid: string, customField: string, options: any = {}) {
+    const body = { data: { custom_field: customField } };
+    const response = await this.portfolios.addCustomFieldSettingForPortfolio(body, portfolioGid, options);
+    return response;
+  }
+
+  async removePortfolioCustomFieldSetting(portfolioGid: string, customField: string, options: any = {}) {
+    const body = { data: { custom_field: customField } };
+    const response = await this.portfolios.removeCustomFieldSettingForPortfolio(body, portfolioGid, options);
+    return response;
+  }
+
+  async createPortfolio(workspace: string, name: string, options: any = {}) {
+    const data = {
+      name,
+      workspace: workspace || this.defaultWorkspaceId,
+      ...options
+    };
+    const response = await this.portfolios.createPortfolio({ data });
+    return response.data;
+  }
+
+  async updatePortfolio(portfolioGid: string, options: any = {}) {
+    const data = { ...options };
+    const response = await this.portfolios.updatePortfolio({ data }, portfolioGid);
+    return response.data;
+  }
+
+  async deletePortfolio(portfolioGid: string, options: any = {}) {
+    const response = await this.portfolios.deletePortfolio(portfolioGid, options);
+    return response.data;
   }
 }

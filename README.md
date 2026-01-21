@@ -398,6 +398,150 @@ asana_update_task({
         * output_dir (string): Directory to save the file (default: ~/downloads)
     * Returns: Path and MIME type of the downloaded file
 
+34. `asana_get_project_template`
+    * Get detailed information about a specific project template
+    * Required input:
+        * project_template_gid (string): The project template GID to retrieve
+    * Optional input:
+        * opt_fields (string): Comma-separated list of optional fields to include
+        * opt_pretty (boolean): Provides formatted output for debugging
+    * Returns: Complete project template record with details about requested dates, roles, and configuration
+
+35. `asana_get_project_templates`
+    * Get multiple project templates
+    * Optional input:
+        * workspace (string): The workspace to get templates from (optional if DEFAULT_WORKSPACE_ID is set)
+        * team (string): The team to get templates from
+        * limit (number): Results per page (1-100)
+        * offset (string): Pagination offset token
+        * opt_fields (string): Comma-separated list of optional fields to include
+        * opt_pretty (boolean): Provides formatted output for debugging
+    * Returns: List of project templates
+
+36. `asana_instantiate_project_template`
+    * Create a project from a template
+    * Required input:
+        * project_template_gid (string): The project template GID to instantiate
+        * name (string): The name of the new project
+        * team (string): The team GID to create the project in
+    * Optional input:
+        * public (boolean): Whether the project should be public to the team
+        * requested_dates (array): Array of date values for template date variables
+        * requested_roles (array): Array of user assignments for template roles
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: Created project information from the template
+
+37. `asana_get_portfolio`
+    * Get detailed information about a specific portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+    * Optional input:
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: Complete portfolio record with details about members, custom fields, and status
+
+38. `asana_list_portfolios`
+    * Get a list of portfolios owned by the current user
+    * Required input:
+        * owner (string): The user who owns the portfolio. Use 'me' for current user, or user GID
+    * Optional input:
+        * workspace (string): The workspace to filter portfolios on (optional if DEFAULT_WORKSPACE_ID is set)
+        * limit (number): Results per page (1-100)
+        * offset (string): Pagination offset token
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: List of compact portfolio objects with pagination support
+
+39. `asana_get_portfolio_items`
+    * Get a list of items (projects and portfolios) in a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+    * Optional input:
+        * limit (number): Results per page (1-100)
+        * offset (string): Pagination offset token
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: List of compact item objects (projects and portfolios) with pagination support
+
+40. `asana_add_portfolio_item`
+    * Add a project or portfolio to a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+        * item (string): The GID of the project or portfolio to add
+    * Returns: Empty data object (success conveyed through 2xx status code)
+
+41. `asana_remove_portfolio_item`
+    * Remove a project or portfolio from a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+        * item (string): The GID of the project or portfolio to remove
+    * Returns: Empty data object (success conveyed through 2xx status code)
+
+42. `asana_add_portfolio_members`
+    * Add members to a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+        * members (array of strings): Array of user GIDs to add as members
+    * Optional input:
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: Updated portfolio record
+
+43. `asana_remove_portfolio_members`
+    * Remove members from a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+        * members (array of strings): Array of user GIDs to remove as members
+    * Optional input:
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: Updated portfolio record
+
+44. `asana_get_portfolio_custom_fields`
+    * Get custom field settings for a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+    * Optional input:
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: List of custom field settings
+
+45. `asana_add_portfolio_custom_field_setting`
+    * Add a custom field setting to a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+        * custom_field (string): The GID of the custom field to add
+    * Returns: Custom field settings object representing the many-to-many join
+
+46. `asana_remove_portfolio_custom_field_setting`
+    * Remove a custom field setting from a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+        * custom_field (string): The GID of the custom field to remove
+    * Returns: Empty data object (success conveyed through 2xx status code)
+
+47. `asana_create_portfolio`
+    * Create a new portfolio
+    * Required input:
+        * name (string): The name of the portfolio
+    * Optional input:
+        * workspace (string): The workspace to create the portfolio in (optional if DEFAULT_WORKSPACE_ID is set)
+        * color (string): Color of the portfolio (light-green, light-orange, light-blue, etc.)
+        * public (boolean): Whether the portfolio is public to the workspace
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: Created portfolio object
+
+48. `asana_update_portfolio`
+    * Update an existing portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+    * Optional input:
+        * name (string): New name for the portfolio
+        * color (string): New color for the portfolio
+        * public (boolean): Whether the portfolio should be public
+        * opt_fields (string): Comma-separated list of optional fields to include
+    * Returns: Updated portfolio object
+
+49. `asana_delete_portfolio`
+    * Delete a portfolio
+    * Required input:
+        * portfolio_gid (string): Globally unique identifier for the portfolio
+    * Returns: Empty data object (success conveyed through 2xx status code)
+
 ## Prompts
 
 1. `task-summary`
