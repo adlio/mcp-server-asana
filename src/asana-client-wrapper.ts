@@ -233,9 +233,37 @@ export class AsanaClientWrapper {
       } = searchOpts;
 
       // Build search parameters
-      const searchParams: any = {
-        ...otherOpts // Include any additional filter parameters
+      const searchParams: any = {};
+
+      // Transform underscore parameters to dot notation for Asana API
+      const parameterMapping: { [key: string]: string } = {
+        'assignee_any': 'assignee.any',
+        'assignee_not': 'assignee.not',
+        'portfolios_any': 'portfolios.any',
+        'projects_any': 'projects.any',
+        'projects_not': 'projects.not',
+        'projects_all': 'projects.all',
+        'sections_any': 'sections.any',
+        'sections_not': 'sections.not',
+        'sections_all': 'sections.all',
+        'tags_any': 'tags.any',
+        'tags_not': 'tags.not',
+        'tags_all': 'tags.all',
+        'teams_any': 'teams.any',
+        'followers_not': 'followers.not',
+        'created_by_any': 'created_by.any',
+        'created_by_not': 'created_by.not',
+        'assigned_by_any': 'assigned_by.any',
+        'assigned_by_not': 'assigned_by.not',
+        'liked_by_not': 'liked_by.not',
+        'commented_on_by_not': 'commented_on_by.not'
       };
+
+      // Transform parameters from underscore to dot notation
+      Object.entries(otherOpts).forEach(([key, value]) => {
+        const mappedKey = parameterMapping[key] || key;
+        searchParams[mappedKey] = value;
+      });
 
       // Handle custom fields if provided
       if (searchOpts.custom_fields) {
